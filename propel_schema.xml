@@ -1,0 +1,77 @@
+<database name="schoolzilla_mapping" defaultIdMethod="native">
+  <!-- behaviors applied to all tables -->
+  <!-- add an auto-incrementing primary key .id" if none exists -->
+  <behavior name="auto_add_pk" />
+  <!-- add created_at and updated_at timestamps -->
+  <behavior name="timestampable" />
+
+  <table name="customer">
+    <!-- assumed to be populated by magic. -->
+    <column name="name" type="VARCHAR" length="250" />
+  </table>
+
+  <table name="student">
+    <!-- assumed to be populated by magic. -->
+    <column name="name" type="VARCHAR" length="250" />
+  <!-- an integer autoincrement id column will also be added for
+       internal use - standard MySQL operating procedure. i'm choosing
+       to associate the student id from the formatted data to the string
+       representation of it. this will be guranteed to be unique per
+       customer via the index below. this approach is debatable. -->
+    <column name="student_id" type="VARCHAR" length="250"
+    description="The student's foreign key for validation." />
+    <foreign_key foreignTable="customer" onDelete="SETNULL">
+      <reference local="customer_id" foreign="id" />
+    </foreign_key>
+    <unique name="customer_student_index">
+      <unique-column name="customer_id" />
+      <unique-column name="student_id" />
+    </unique>
+  </table>
+
+  <table name="map_type">
+    <column name="name" type="VARCHAR" length="250" />
+    <!-- debatable, we could map this in code too -->
+    <column name="map_class" type="LONGVARCHAR" />
+    <foreign_key foreignTable="customer" onDelete="SETNULL">
+      <reference local="customer_id" foreign="id" />
+    </foreign_key>
+  </table>
+
+  <table name="transcript_score">
+    <column name="score" type="INTEGER" />
+    <foreign-key foreignTable="student" onDelete="SETNULL">
+      <reference local="student_id" foreign="student_id" />
+    </foreign-key>
+    <foreign-key foreignTable="subject" onDelete="SETNULL">
+      <reference local="subject_id" foreign="id" />
+  </foreign-key>
+  </table>
+
+  <table name="subject">
+    <!-- assuming we want this to be a real database, we'll want a
+         seperate table for this -->
+    <column name="display_name" type="VARCHAR" length="250" />
+    <column name="subject_type" type="ENUM" values="math, science" />
+  </table>
+
+  <table name="unformatted_file">
+    <!-- preserving original filename here -->
+    <column name="name" type="LONGVARCHAR" />
+    <foreign_key foreignTable="map_type" onDelete="SETNULL">
+      <reference local="map_type_id" foreign="map_type" />
+    </foreign_key>
+    <foreign_key foreignTable="customer" onDelete="SETNULL">
+      <reference local="customer_id" foreign="id" />
+    </foreign_key>
+  </table>
+
+  <table name="validation_error">
+    <column name="row_key" type="integer" />
+    <column name="column" type="VARCHAR" length="20" />
+    <column name="error" type="VARCHAR" length="250" />
+    <foreign_key foreignTable="unformatted_file" onDelete="SETNULL">
+      <reference local="unformatted_file_id" foreign="id" />
+    </foreign_key>
+  </table>
+</database>

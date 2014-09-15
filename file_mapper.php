@@ -49,3 +49,5 @@ private function mapRow($file, $row) {
   }
   return $errors;
 }
+
+?>
