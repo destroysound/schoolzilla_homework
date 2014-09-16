@@ -13,7 +13,7 @@ public function map($file) {
   try {
     while (true) {
       $row = $client->scannerGet($scanner);
-      $errors = $this->mapRow($file, $row);
+      $errors = $this->mapRow($row);
     }
   }
   catch ( NotFound $nf ) {

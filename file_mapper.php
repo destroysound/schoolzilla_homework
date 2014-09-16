@@ -10,7 +10,7 @@ private $class_columns = array(
         'validator' => 'Schoolzilla/Validators/Score'),
 );
 
-private function mapRow($file, $row) {
+private function mapRow($row) {
   $values = $row->columns;
   $student_id = $values[$this->student_id_column];
   $student = new StudentQuery::create()->getOneByStudentId($student_id);
