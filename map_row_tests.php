@@ -12,7 +12,7 @@ class MapRowTest extends PHPUnit_Framework_TestCase {
     $row = new StdClass();
     $row->columns = array('cf:0' => '2468975', 'cf:1' => '85', 'cf:2' => '');
     $this->assertCount( Schoolzilla/Mappers/OurFileMapper->mapRow($row), 1);
-    // we can test individual errors by checking the getError attribute.
+    // we can test individual errors by checking the error field.
     $this->assertEquals(
       Schoolzilla/Mappers/OurFileMapper->mapRow($row)[0]->getError(),
       "Not a valid score.");
